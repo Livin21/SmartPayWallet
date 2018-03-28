@@ -3,6 +3,7 @@
     package="com.lmntrx.android.smartpaywallet">
 
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"

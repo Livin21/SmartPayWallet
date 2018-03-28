@@ -29,7 +29,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.annotation.NonNull
 import android.support.v4.app.ActivityCompat
+import android.view.KeyEvent
 import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
@@ -66,4 +68,28 @@ class BillScannerActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 -> {
+                barcodeView = findViewById(R.id.barcode_scanner)
+                barcodeView.decodeSingle(barcodeCallback)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        barcodeView.resume()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean = barcodeView.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
+
+    override fun onPause() {
+        super.onPause()
+        barcodeView.pause()
+    }
 }
+
+
