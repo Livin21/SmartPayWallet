@@ -48,8 +48,6 @@ public class WalletActivity extends AppCompatActivity {
 
         attachWallet();
 
-        setPrivateKeyQRCode();
-
     }
 
     private void attachWallet() {
@@ -64,6 +62,7 @@ public class WalletActivity extends AppCompatActivity {
                             wallet.setBalance(document.getDouble("balance"));
                             balanceTextView.setText(String.valueOf(document.getDouble("balance")));
                             addressTextView.setText(document.getString("address"));
+                            setPrivateKeyQRCode();
                         }
                     }
                 });
