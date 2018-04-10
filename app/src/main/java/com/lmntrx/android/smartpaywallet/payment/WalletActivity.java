@@ -35,7 +35,6 @@ public class WalletActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet);
-        setPrivateKeyQRCode();
 
         wallet = new Wallet();
 
@@ -49,6 +48,8 @@ public class WalletActivity extends AppCompatActivity {
 
         attachWallet();
 
+        setPrivateKeyQRCode();
+
     }
 
     private void attachWallet() {
@@ -57,13 +58,13 @@ public class WalletActivity extends AppCompatActivity {
                     @Override
                     public void onEvent(DocumentSnapshot document, FirebaseFirestoreException e) {
                         progressDialog.dismiss();
-                                if (document.getId().equals(Preferences.INSTANCE.getDocumentReference(WalletActivity.this))){
-                                    wallet.setDocumentReference(document.getId());
-                                    wallet.setAddress(document.getString("address"));
-                                    wallet.setBalance(document.getDouble("balance"));
-                                    balanceTextView.setText(String.valueOf(document.getDouble("balance")));
-                                    addressTextView.setText(document.getString("address"));
-                                }
+                        if (document.getId().equals(Preferences.INSTANCE.getDocumentReference(WalletActivity.this))) {
+                            wallet.setDocumentReference(document.getId());
+                            wallet.setAddress(document.getString("address"));
+                            wallet.setBalance(document.getDouble("balance"));
+                            balanceTextView.setText(String.valueOf(document.getDouble("balance")));
+                            addressTextView.setText(document.getString("address"));
+                        }
                     }
                 });
     }
@@ -71,7 +72,7 @@ public class WalletActivity extends AppCompatActivity {
     private void setPrivateKeyQRCode() {
         ImageView privateKeyImageView = findViewById(R.id.privateKeyImageView);
         try {
-            privateKeyImageView.setImageBitmap(QRCodeHandler.generateQRCode(wallet.getAddress(),getScreenRes()));
+            privateKeyImageView.setImageBitmap(QRCodeHandler.generateQRCode(wallet.getAddress(), getScreenRes()));
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -85,7 +86,7 @@ public class WalletActivity extends AppCompatActivity {
     }
 
     public void rechargeWallet(View view) {
-        final EditText editText =  new EditText(this);
+        final EditText editText = new EditText(this);
         editText.setHint("Enter amount");
         editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         new AlertDialog.Builder(this)
@@ -97,23 +98,23 @@ public class WalletActivity extends AppCompatActivity {
                         final ProgressDialog progressDialog = new ProgressDialog(WalletActivity.this);
                         try {
                             Double rechargeAmount = Double.parseDouble(editText.getText().toString());
-                            if (rechargeAmount > 0 && rechargeAmount <= 10000){
+                            if (rechargeAmount > 0 && rechargeAmount <= 10000) {
                                 dialogInterface.dismiss();
                                 progressDialog.setMessage("Please Wait...");
                                 progressDialog.setCancelable(false);
                                 progressDialog.show();
-                                Wallet.recharge(wallet, rechargeAmount, new Wallet.OnRechargeComplete(){
+                                Wallet.recharge(wallet, rechargeAmount, new Wallet.OnRechargeComplete() {
                                     @Override
-                                    public void onComplete(Double newBalance){
+                                    public void onComplete(Double newBalance) {
                                         progressDialog.dismiss();
                                         //balanceTextView.setText(String.valueOf(newBalance));
                                         Toast.makeText(WalletActivity.this, "Wallet Recharged", Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                            }else {
+                            } else {
                                 Toast.makeText(WalletActivity.this, "Recharge amount should be greater than 0 and less than 10000", Toast.LENGTH_LONG).show();
                             }
-                        }catch (NumberFormatException e){
+                        } catch (NumberFormatException e) {
                             Toast.makeText(WalletActivity.this, "Enter a valid amount", Toast.LENGTH_SHORT).show();
                         }
 

@@ -11,7 +11,6 @@ import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lmntrx.android.library.livin.missme.ProgressDialog
-import com.lmntrx.android.smartpaywallet.bill.BillScannerActivity
 import com.lmntrx.android.smartpaywallet.payment.Wallet
 
 class MainActivity : AppCompatActivity() {
@@ -22,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         val auth = FirebaseAuth.getInstance()
         if (auth.currentUser != null) {
-            startActivity(Intent(this, BillScannerActivity::class.java))
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
         } else {
             startActivityForResult(
@@ -41,9 +40,8 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == Companion.SIGN_IN_REQUEST_CONST) {
             // Successfully signed in
             if (resultCode == Activity.RESULT_OK) {
-
+                Toast.makeText(this,"SignIn Success", Toast.LENGTH_LONG).show()
                 createAndSaveWallet()
-
             } else {
                 if (resultCode == Activity.RESULT_CANCELED) {
                     Toast.makeText(this, "Request Cancelled", Toast.LENGTH_SHORT).show()
@@ -81,8 +79,8 @@ class MainActivity : AppCompatActivity() {
                     .addOnSuccessListener { documentReference ->
                         progressDialog.dismiss()
                         Log.d("WALLET", "Success")
-                        Preferences.saveDocumentReference(this@MainActivity, documentReference.id)
-                        startActivity(Intent(this, BillScannerActivity::class.java))
+                        Preferences.saveDocumentReference(this, documentReference.id)
+                        startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     }
                     .addOnFailureListener {

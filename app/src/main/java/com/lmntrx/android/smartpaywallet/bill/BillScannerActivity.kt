@@ -27,10 +27,9 @@ package com.lmntrx.android.smartpaywallet.bill
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.annotation.NonNull
 import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback
@@ -40,7 +39,7 @@ import com.lmntrx.android.smartpaywallet.R
 
 class BillScannerActivity : AppCompatActivity() {
 
-    private lateinit var barcodeView: CompoundBarcodeView
+    private var barcodeView: CompoundBarcodeView? = null
 
     private val barcodeCallback = object : BarcodeCallback {
         override fun barcodeResult(result: BarcodeResult?) {
@@ -64,7 +63,7 @@ class BillScannerActivity : AppCompatActivity() {
 
         } else {
             barcodeView = findViewById(R.id.barcode_scanner)
-            barcodeView.decodeSingle(barcodeCallback)
+            barcodeView?.decodeSingle(barcodeCallback)
         }
 
     }
@@ -74,21 +73,21 @@ class BillScannerActivity : AppCompatActivity() {
         when (requestCode) {
             1 -> {
                 barcodeView = findViewById(R.id.barcode_scanner)
-                barcodeView.decodeSingle(barcodeCallback)
+                barcodeView?.decodeSingle(barcodeCallback)
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        barcodeView.resume()
+        barcodeView?.resume()
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean = barcodeView.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean = barcodeView!!.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
 
     override fun onPause() {
         super.onPause()
-        barcodeView.pause()
+        barcodeView?.pause()
     }
 }
 
