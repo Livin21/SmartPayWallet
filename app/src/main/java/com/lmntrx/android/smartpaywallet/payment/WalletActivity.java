@@ -3,6 +3,7 @@ package com.lmntrx.android.smartpaywallet.payment;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -20,7 +21,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.zxing.WriterException;
 import com.lmntrx.android.smartpaywallet.Preferences;
 import com.lmntrx.android.smartpaywallet.R;
+import com.lmntrx.android.smartpaywallet.ReportGenerator;
 import com.lmntrx.android.smartpaywallet.payment.qrcode.QRCodeHandler;
+
+import java.util.List;
 
 public class WalletActivity extends AppCompatActivity {
 
@@ -51,6 +55,7 @@ public class WalletActivity extends AppCompatActivity {
     }
 
     private void attachWallet() {
+
         FirebaseFirestore.getInstance().collection("wallets").document(Preferences.INSTANCE.getDocumentReference(this))
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
@@ -126,6 +131,12 @@ public class WalletActivity extends AppCompatActivity {
                     }
                 }).show();
 
+    }
+
+    public void generateReport(View view) {
+        Intent intent = new Intent(this, ReportGenerator.class);
+        intent.putExtra("address", wallet.getAddress());
+        startActivity(intent);
     }
 }
 

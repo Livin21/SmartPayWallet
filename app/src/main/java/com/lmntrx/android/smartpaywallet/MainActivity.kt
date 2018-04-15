@@ -74,19 +74,35 @@ class MainActivity : AppCompatActivity() {
         progressDialog.show()
         val db = FirebaseFirestore.getInstance()
         if (Preferences.getDocumentReference(this).isEmpty()) {
-            db.collection("wallets")
-                    .add(Wallet.createWallet(this))
-                    .addOnSuccessListener { documentReference ->
+
+            FirebaseFirestore.getInstance().collection("wallets").get().addOnCompleteListener {
+                var walletFound = false
+                it.result.documents.forEach {
+                    if (it.get("address") == FirebaseAuth.getInstance().currentUser!!.uid) {
+                        Preferences.saveDocumentReference(this, it.id)
+                        walletFound = true
                         progressDialog.dismiss()
                         Log.d("WALLET", "Success")
-                        Preferences.saveDocumentReference(this, documentReference.id)
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     }
-                    .addOnFailureListener {
-                        e -> e.printStackTrace()
-                        progressDialog.dismiss()
-                    }
+                }
+                if (!walletFound){
+                    db.collection("wallets")
+                            .add(Wallet.createWallet(this))
+                            .addOnSuccessListener { documentReference ->
+                                progressDialog.dismiss()
+                                Log.d("WALLET", "Success")
+                                Preferences.saveDocumentReference(this, documentReference.id)
+                                startActivity(Intent(this, HomeActivity::class.java))
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                e -> e.printStackTrace()
+                                progressDialog.dismiss()
+                            }
+                }
+            }
         }
     }
 

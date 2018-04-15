@@ -20,4 +20,6 @@
     <string name="upload_csv">Upload CSV</string>
     <string name="accept_payment">Accept Payment</string>
     <string name="scan_bill">Scan Bill</string>
+    <string name="generate_tax_report">Generate Tax Report</string>
+    <string name="no_transactions_yet">No Transactions Yet</string>
 </resources>

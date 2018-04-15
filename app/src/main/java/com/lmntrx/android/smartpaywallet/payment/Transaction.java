@@ -2,6 +2,7 @@ package com.lmntrx.android.smartpaywallet.payment;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.SpannableStringBuilder;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -11,7 +12,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.lmntrx.android.smartpaywallet.Preferences;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashMap;
 
 /***
@@ -27,7 +31,7 @@ public class Transaction implements Serializable {
 
     private Wallet toWallet;
 
-    void setFromAddress(String fromAddress) {
+    public void setFromAddress(String fromAddress) {
         this.fromAddress = fromAddress;
         Wallet.getWallet(fromAddress, new Wallet.OnWalletFetchCompletedListener() {
             @Override
@@ -41,7 +45,7 @@ public class Transaction implements Serializable {
         });
     }
 
-    void setToAddress(String toAddress) {
+    public void setToAddress(String toAddress) {
         this.toAddress = toAddress;
         Wallet.getWallet(toAddress, new Wallet.OnWalletFetchCompletedListener() {
             @Override
@@ -56,7 +60,7 @@ public class Transaction implements Serializable {
         });
     }
 
-    void setWhen(Long when) {
+    public void setWhen(Long when) {
         this.when = when;
     }
 
@@ -129,6 +133,38 @@ public class Transaction implements Serializable {
                         onTransactionCompleteListener.onError(e.getMessage());
                     }
                 });
+    }
+
+    public String print() {
+
+        String printable = "";
+
+        if (toAddress != null){
+            printable = printable.concat("To Address: " + toAddress);
+        }
+
+        if (fromAddress != null){
+            printable = printable.concat("\nFrom Address: " + fromAddress);
+        }
+
+        if (amount != null){
+            printable = printable.concat("\nAmount: " + amount);
+        }
+
+        if (when != null){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(when);
+            printable = printable.concat("\nTime: " +
+                    calendar.get(Calendar.HOUR) + ":" +
+                    calendar.get(Calendar.MINUTE) + ":" +
+                    calendar.get(Calendar.SECOND) + " " +
+                    calendar.get(Calendar.DAY_OF_MONTH) + "/" +
+                    calendar.get(Calendar.MONTH) + "/" +
+                    calendar.get(Calendar.YEAR)
+
+            );
+        }
+        return printable;
     }
 
     static class Builder {
