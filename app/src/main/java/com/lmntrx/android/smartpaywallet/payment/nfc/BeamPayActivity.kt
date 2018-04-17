@@ -39,11 +39,20 @@ import com.lmntrx.android.smartpaywallet.R
 import com.lmntrx.android.smartpaywallet.payment.Wallet
 import com.lmntrx.android.smartpaywallet.payment.WalletActivity
 import kotlinx.android.synthetic.main.activity_beam_pay.*
+import android.app.PendingIntent
+import android.nfc.tech.*
+
 
 class BeamPayActivity : AppCompatActivity(), NfcAdapter.CreateNdefMessageCallback {
 
     private var mNfcAdapter: NfcAdapter? = null
     private var wallet: Wallet? = null
+
+    private var mPendingIntent: PendingIntent? = null
+
+    private val mTechLists = arrayOf(
+            arrayOf(Ndef::class.java.name)
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,10 +74,18 @@ class BeamPayActivity : AppCompatActivity(), NfcAdapter.CreateNdefMessageCallbac
 
                 if (mNfcAdapter == null){
                     Toast.makeText(this@BeamPayActivity, "This device doesn't support NFC. Switching to QR Cde mode.", Toast.LENGTH_LONG).show()
-                    val intent = Intent(this@BeamPayActivity, WalletActivity::class.java)
-                    startActivity(intent)
+                    val i = Intent(this@BeamPayActivity, WalletActivity::class.java)
+                    startActivity(i)
                     finish()
                 }
+
+
+                val intent = Intent(this@BeamPayActivity, BeamPayActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY)
+                mPendingIntent = PendingIntent.getActivity(this@BeamPayActivity, 0, intent, 0)
+
+                mNfcAdapter?.enableForegroundDispatch(this@BeamPayActivity, mPendingIntent, null, mTechLists)
+
 
 
                 mNfcAdapter?.setNdefPushMessageCallback(this@BeamPayActivity, this@BeamPayActivity)
@@ -81,8 +98,8 @@ class BeamPayActivity : AppCompatActivity(), NfcAdapter.CreateNdefMessageCallbac
         })
 
         switchModeButton.setOnClickListener {
-            val intent = Intent(this@BeamPayActivity, WalletActivity::class.java)
-            startActivity(intent)
+            val i = Intent(this@BeamPayActivity, WalletActivity::class.java)
+            startActivity(i)
             finish()
         }
 
@@ -104,6 +121,7 @@ class BeamPayActivity : AppCompatActivity(), NfcAdapter.CreateNdefMessageCallbac
 
     override fun onResume() {
         super.onResume()
+
         // Check to see that the Activity started due to an Android Beam
         if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
             processIntent(intent)
