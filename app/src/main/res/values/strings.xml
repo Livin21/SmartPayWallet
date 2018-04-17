@@ -8,7 +8,7 @@
     <string name="generate_new_private_key">Generate New Private Key</string>
     <string name="wallet">Wallet</string>
     <string name="wallet_address_reader">Wallet Address Reader</string>
-    <string name="desc_nfc_tag">Please tap your phone on the NFC Tag to read shop\'s wallet address</string>
+    <string name="desc_nfc_tag">Please tap your phone on the shopper\'s phone</string>
     <string name="no_of_items_purchased">%d Items Purchased</string>
     <string name="total_amount">Total Amount = Rs. %f</string>
     <string name="itrm_price">MRP:  ₹ %f/-</string>
@@ -22,4 +22,5 @@
     <string name="scan_bill">Scan Bill</string>
     <string name="generate_tax_report">Generate Tax Report</string>
     <string name="no_transactions_yet">No Transactions Yet</string>
+    <string name="switch_to_qr_code_mode">Switch to QRCode Mode</string>
 </resources>

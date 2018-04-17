@@ -20,7 +20,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".payment.WalletActivity" />
-        <activity android:name=".payment.nfc.AddressGrabberActivity" />
         <activity android:name=".bill.BillScannerActivity" />
         <activity android:name=".bill.BillGenerationActivity" />
         <activity android:name=".payment.nfc.BeamPayActivity">
@@ -29,11 +28,11 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:mimeType="application/vnd.com.lmntrx.android.smartpaywallet" />
+                <data android:mimeType="application/vnd.com.lmntrx.android.smartpaywallet.payment.nfc" />
             </intent-filter>
         </activity>
         <activity android:name=".HomeActivity" />
-        <activity android:name=".ReportGenerator"></activity>
+        <activity android:name=".ReportGenerator" />
     </application>
 
 </manifest>

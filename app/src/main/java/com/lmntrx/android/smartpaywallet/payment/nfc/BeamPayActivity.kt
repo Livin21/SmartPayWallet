@@ -38,6 +38,7 @@ import com.lmntrx.android.library.livin.missme.ProgressDialog
 import com.lmntrx.android.smartpaywallet.R
 import com.lmntrx.android.smartpaywallet.payment.Wallet
 import com.lmntrx.android.smartpaywallet.payment.WalletActivity
+import kotlinx.android.synthetic.main.activity_beam_pay.*
 
 class BeamPayActivity : AppCompatActivity(), NfcAdapter.CreateNdefMessageCallback {
 
@@ -79,18 +80,23 @@ class BeamPayActivity : AppCompatActivity(), NfcAdapter.CreateNdefMessageCallbac
             }
         })
 
+        switchModeButton.setOnClickListener {
+            val intent = Intent(this@BeamPayActivity, WalletActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
     }
 
 
 
     override fun createNdefMessage(event: NfcEvent?): NdefMessage {
 
-        val text = "Beam me up, Android!\n\n" +
-                "Beam Time: " + System.currentTimeMillis()
+        val text = wallet?.address
 
         return NdefMessage(arrayOf(
-                createMime("application/vnd.com.lmntrx.android.smartpaywallet", text.toByteArray())
-                ,NdefRecord.createApplicationRecord("com.lmntrx.android.smartpaywallet")
+                createMime("application/vnd.com.smartpay.android", text?.toByteArray())
+                ,NdefRecord.createApplicationRecord("com.smartpay.android")
 
         ))
 
@@ -118,7 +124,11 @@ class BeamPayActivity : AppCompatActivity(), NfcAdapter.CreateNdefMessageCallbac
                 NfcAdapter.EXTRA_NDEF_MESSAGES)
         // only one message sent during the beam
         val msg = rawMsgs[0] as NdefMessage
+
+        val feedBack = String(msg.records[0].payload)
         // record 0 contains the MIME type, record 1 is the AAR, if present
-        Toast.makeText(this, String(msg.records[0].payload), Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "$feedBack. Payment Complete!", Toast.LENGTH_LONG).show()
+        startActivity(Intent(this, WalletActivity::class.java))
+
     }
 }
